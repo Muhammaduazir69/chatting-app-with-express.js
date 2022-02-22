@@ -1,0 +1,125 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,700,900&display=swap');
+
+body{
+  font-family: 'Roboto', sans-serif;
+}
+.top-menu{
+  font-weight: 300;
+  font-size: 14px;
+  letter-spacing: 2px;
+}
+.brand-logo{
+  font-weight: 900;
+  font-size: 24pt;
+}
+.bged-top{
+  background-image: url("/themes/default//img/bg.jpg");
+  background-position: center;
+  background-size: cover;
+}
+.top-head-intro{
+  padding: 3em 0em 5em 0em;
+  font-weight: 300;
+  font-size: 19pt;
+  /* background-color: rgba(0,0,0,0.1); */
+}
+.head-call-to-action{
+  padding: 1em 1em 0.2em 1em !important;
+  background-color: rgba(255, 255, 255, 0.8) !important;
+}
+.head-like{
+  font-weight: 500;
+  font-size: 22pt;
+}
+.btn-bordered{
+  border: thin solid #7cb342;
+}
+.plan-features-list{
+  font-size: 16pt;
+  font-weight: 300;
+  line-height: 42px;
+}
+.section .alert{
+  font-size: 13pt;
+  font-weight: 300;
+  background-color: rgba(0, 0, 0, 0.1);
+  padding: 8px 12px !important;
+  border-radius: 4px;
+}
+.section .alert p{
+  margin: 8px 0;
+}
+.head-banner{
+  min-height: 240px;
+}
+.head-banner .the-title{
+  margin-top: 0;
+  padding-top: 0;
+}
+.share-with{
+  padding-top: 2em;
+}
+.share-with a{
+  margin-left: 1em;
+}
+.company-logo{
+  border-radius: 6px;
+  border: thin solid lightgrey;
+}
+.about-job{
+  font-size: 13pt;
+}
+.main-content{
+  margin: 3em auto 0 auto;
+}
+@media only screen and (max-width : 992px) {
+  main{
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+  h1{
+    font-size: 28pt !important;
+  }
+  h2{
+    font-size: 22pt !important;
+  }
+  h3{
+    font-size: 20pt !important;
+  }
+  h4{
+    font-size: 18pt !important;
+  }
+  .main-content{
+    margin: 0em auto 0 auto !important;
+    box-shadow: 0 0 0;
+  }
+  .card, .card-panel, .container{
+    /* padding: 8px !important; */
+  }
+  .col{
+    padding-left: 1px !important;
+    padding-right: 1px !important;
+  }
+  .col .card-panel{
+    padding: 4px 4px !important;
+  }
+  .row{
+    margin-left: 0px;
+    margin-right: 0px;
+  }
+  .container{
+    width: 100%;
+  }
+  .modal-header{
+    padding: 12px 12px;
+  }
+  .modal-header .fa{
+    /* font-size: 20pt; */
+    color: red;
+  }
+  .modal-title {
+    font-size: 18pt;
+    font-weight: normal;
+    margin: 0 !important;
+  }
+}

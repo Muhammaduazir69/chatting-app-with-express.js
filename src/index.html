@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Live Class - Application de visio-conférence avec WebRTC, SocketIO et NodeJS</title>
+
+        <meta content="width=device-width, initial-scale=1" name="viewport" />
+
+        <link rel="stylesheet" href="assets/css/bootstrap.min.css" type="text/css">
+        <link rel="stylesheet" href="assets/css/all.min.css" type="text/css">
+        <link rel='stylesheet' href='assets/css/app.css' type="text/css">
+
+        <script src='/socket.io/socket.io.js'></script>
+        <script type="module" src='assets/js/rtc.js'></script>
+        <script type="module" src='assets/js/events.js'></script>
+        <script src="assets/adapter.min.js" type="text/javascript"></script>
+        <script src="assets/moment.min.js" type="text/javascript"></script>
+        <script src='assets/FileSaver.min.js' type="text/javascript"></script>
+        <script src='assets/xss-filters.js' type="text/javascript"></script>
+        <script src='assets/js/autolink.js' type="text/javascript"></script>
+    </head>
+
+    <body>
+        <div class="custom-modal" id='recording-options-modal'>
+            <div class="custom-modal-content">
+                <div class="row text-center">
+                    <div class="col-md-6 mb-2">
+                        <span class="record-option" id='record-video'>Enregistrer la vidéo</span>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <span class="record-option" id='record-screen'>Enregistrer l'écran</span>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-md-12 text-center">
+                        <button class="btn btn-outline-danger" id='closeModal'>Fermer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <nav class="navbar fixed-top bg-info rounded-0 d-print-none">
+            <div class="text-white text-bold"><b style="font-weight:900">Live Class</b></div>
+
+            <div class="pull-right room-comm" hidden>
+                <button class="btn btn-sm rounded-0 btn-no-effect" id='toggle-video' title="Cacher la vidéo">
+                    <i class="fa fa-video text-white"></i>
+                </button>
+
+                <button class="btn btn-sm rounded-0 btn-no-effect" id='toggle-mute' title="Muet">
+                    <i class="fa fa-microphone-alt text-white"></i>
+                </button>
+
+                <button class="btn btn-sm rounded-0 btn-no-effect" id='share-screen' title="Partager l'écran">
+                    <i class="fa fa-desktop text-white"></i>
+                </button>
+
+                <button class="btn btn-sm rounded-0 btn-no-effect" id='record' title="Enregistrer">
+                    <i class="fa fa-dot-circle text-white"></i>
+                </button>
+
+                <button class="btn btn-sm text-white pull-right btn-no-effect" id='toggle-chat-pane'>
+                    <i class="fa fa-comment"></i> <span class="badge badge-danger very-small font-weight-lighter" id='new-chat-notification' hidden>Nouveau(x)</span>
+                </button>
+
+                <button class="btn btn-sm rounded-0 btn-no-effect text-white">
+                    <a href="/" class="text-white text-decoration-none"><i class="fa fa-sign-out-alt text-white" title="Quitter"></i></a>
+                </button>
+            </div>
+        </nav>
+
+        <div class="container-fluid" id='room-create' hidden>
+            <div class="row">
+                <div class="col-12 h2 mt-5 text-center">Créer une Salle</div>
+            </div>
+
+            <div class="row mt-2">
+                <div class="col-12 text-center">
+                    <span class="form-text small text-danger" id='err-msg'></span>
+                </div>
+
+                <div class="col-12 col-md-4 offset-md-4 mb-3">
+                    <label for="room-name">Nom de la Salle</label>
+                    <input type="text" id='room-name' class="form-control rounded-0">
+                </div>
+
+                <div class="col-12 col-md-4 offset-md-4 mb-3">
+                    <label for="your-name">Votre Nom</label>
+                    <input type="text" id='your-name' class="form-control rounded-0">
+                </div>
+
+                <div class="col-12 col-md-4 offset-md-4 mb-3">
+                    <button id='create-room' class="btn btn-block rounded-0 btn-info"><b>Créer la Salle</b></button>
+                </div>
+
+                <div class="col-12 col-md-4 offset-md-4 mb-3" id='room-created'></div>
+            </div>
+        </div>
+
+
+
+        <div class="container-fluid" id='username-set' hidden>
+            <div class="row">
+                <div class="col-12 h4 mt-5 text-center" id="room-name-label">Bienvenue dans Salle</div>
+            </div>
+
+            <div class="row mt-2">
+                <div class="col-12 text-center">
+                    <span class="form-text small text-danger" id='err-msg-username'></span>
+                </div>
+                <div class="col-12 text-center">
+                    <span class="form-text text-info" >Veuillez entrer votre nom pour entrer dans la Salle</span>
+                </div>
+
+                <div class="col-12 col-md-4 offset-md-4 mb-3">
+                    <label for="username"><!--Votre Nom--></label>
+                    <input type="text" id='username' class="form-control rounded-0" placeholder="Votre Nom">
+                </div>
+
+                <div class="col-12 col-md-4 offset-md-4 mb-3">
+                    <button id='enter-room' class="btn btn-block rounded-0 btn-info"><b>Entrer dans la Salle</b></button>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="container-fluid room-comm" hidden>
+            <div class="row">
+                <video class="local-video mirror-mode" id='local' volume='0' autoplay muted></video>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 main" id='main-section'>
+                    <div class="row mt-2 mb-2" id='videos'></div>
+                </div>
+
+                <div class="col-md-3 chat-col d-print-none mb-2 bg-info" id='chat-pane' hidden>
+                    <div class="row">
+                        <div class="col-12 text-center h2 mb-3">Discussions</div>
+                    </div>
+
+                    <div id='chat-messages'></div>
+
+                    <div class="row">
+                      <!-- <button type="button" class="btn btn-small btn-outline-info">Envoyer</button> -->
+                        <textarea id='chat-input' class="form-control rounded-0 chat-box border-info" rows='3' placeholder="Écrire ici..."></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
